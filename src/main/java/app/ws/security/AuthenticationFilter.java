@@ -1,5 +1,8 @@
 package app.ws.security;
 
+import app.ws.SpringApplicationContext;
+import app.ws.service.UserService;
+import app.ws.shared.dto.UserDto;
 import app.ws.ui.model.request.UserLoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -83,10 +86,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
                 .compact();
 
+        // Getting userServiceImpl because we need to communicate with database and this bean is available.
+        UserService userService = (UserService)SpringApplicationContext.getBean("userServiceImpl");
+        UserDto userDto = userService.getUser(userName); // getting user data from database
+
         // Token is included in the header, and client that receives this response will need to extract it and store it.
         // For example, if it is an IOS mobile application it will most likely be stored in IOS key chain.
         // Then, every time that application wants to communicate it needs to include this token in header.
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+
+        // Adding user public ID
+        response.addHeader("UserID", userDto.getUserId());
     }
 
 }

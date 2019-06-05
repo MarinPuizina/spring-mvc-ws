@@ -1,6 +1,6 @@
 package app.ws.service.impl;
 
-import app.ws.UserRepository;
+import app.ws.io.repository.UserRepository;
 import app.ws.io.entity.UserEntity;
 import app.ws.service.UserService;
 import app.ws.shared.Utils;
@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Override
     public UserDto createUser(UserDto user) {
@@ -65,6 +66,20 @@ public class UserServiceImpl implements UserService {
         if(userEntity == null) throw new UsernameNotFoundException(email);
 
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+    }
+
+    @Override
+    public UserDto getUser(String email) {
+
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        // Making sure we are getting UserEntity object from database.
+        if(userEntity == null) throw new UsernameNotFoundException(email);
+
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
     }
 
 }
