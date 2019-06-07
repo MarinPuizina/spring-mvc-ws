@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("users") //http://localhost:8080/spring-mvc-ws/users
 public class UserController {
 
     @Autowired
