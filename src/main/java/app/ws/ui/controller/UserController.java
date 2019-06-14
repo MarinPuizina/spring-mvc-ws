@@ -1,19 +1,20 @@
 package app.ws.ui.controller;
 
 import app.ws.exceptions.UserServiceException;
+import app.ws.service.AddressService;
 import app.ws.service.UserService;
+import app.ws.shared.dto.AddressDto;
 import app.ws.shared.dto.UserDto;
 import app.ws.ui.model.request.UserDetailsRequestModel;
-import app.ws.ui.model.response.ErrorMessages;
-import app.ws.ui.model.response.OperationStatusModel;
-import app.ws.ui.model.response.RequestOperationStatus;
-import app.ws.ui.model.response.UserRest;
+import app.ws.ui.model.response.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +25,18 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    AddressService addressService;
+
     @GetMapping(path = "/{id}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest getUser(@PathVariable String id) {
 
-        UserRest returnValue = new UserRest();
-
         UserDto userDto = userService.getUserByUserId(id);
-        BeanUtils.copyProperties(userDto, returnValue);
+        //BeanUtils.copyProperties(userDto, returnValue);
+
+        ModelMapper modelMapper = new ModelMapper();
+        UserRest returnValue = modelMapper.map(userDto, UserRest.class);
 
         return returnValue;
     }
@@ -107,6 +112,37 @@ public class UserController {
         }
 
         return returnValue;
+    }
+
+    // http://localhost:8080/spring-mvc-ws/users/{id}/addresses
+    @GetMapping(path = "/{id}/addresses",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public List<AddressesRest> getUserAddresses(@PathVariable String id) {
+
+        List<AddressesRest> returnValue = new ArrayList<>();
+
+        List<AddressDto> addressDto = addressService.getAddresses(id);
+
+        if (addressDto != null && !addressDto.isEmpty()) {
+
+            Type listType = new TypeToken<List<AddressesRest>>(){}.getType();
+            returnValue = new ModelMapper().map(addressDto, listType);
+
+        }
+
+        return returnValue;
+    }
+
+    // http://localhost:8080/spring-mvc-ws/users/{userId}/addresses/{addressId}
+    @GetMapping(path = "/{userId}/addresses/{addressId}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public AddressesRest getUserAddress(@PathVariable String addressId) {
+
+        AddressDto addressDto = addressService.getAddress(addressId);
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        return modelMapper.map(addressDto, AddressesRest.class);
     }
 
 }
