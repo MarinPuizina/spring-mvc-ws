@@ -8,6 +8,7 @@ import app.ws.ui.model.response.ErrorMessages;
 import app.ws.ui.model.response.OperationStatusModel;
 import app.ws.ui.model.response.RequestOperationStatus;
 import app.ws.ui.model.response.UserRest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -43,11 +44,15 @@ public class UserController {
 
         if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto); // Populating userDto with information that came with Request body
+        // UserDto userDto = new UserDto();
+        // BeanUtils.copyProperties(userDetails, userDto); // Populating userDto with information that came with Request body
+
+        ModelMapper modelMapper = new ModelMapper(); // Using ModelMapper because it's smarter way to map objects
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createUser, returnValue);
+        //BeanUtils.copyProperties(createUser, returnValue);
+        returnValue = modelMapper.map(createUser, UserRest.class);
 
         return returnValue;
     }

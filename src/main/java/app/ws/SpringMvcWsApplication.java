@@ -8,14 +8,14 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-// SpringBootServletInitializer to be able to make war file
+// SpringBootServletInitializer to be able to make war file "extends SpringBootServletInitializer"
 @SpringBootApplication
-public class SpringMvcWsApplication extends SpringBootServletInitializer {
-
+public class SpringMvcWsApplication {
+	/*
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(SpringMvcWsApplication.class);
-	}
+	}*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringMvcWsApplication.class, args);
