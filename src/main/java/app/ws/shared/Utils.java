@@ -1,8 +1,13 @@
 package app.ws.shared;
 
+import app.ws.security.SecurityConstants;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Random;
 
 @Component
@@ -29,6 +34,29 @@ public class Utils {
         }
 
         return new String(returnValue);
+    }
+
+    public static boolean hasTokenExpired(String token) {
+
+        Claims claims = Jwts.parser()
+                .setSigningKey(SecurityConstants.getTokenSecret())
+                .parseClaimsJws(token).getBody();
+
+        Date tokenExpirationDate = claims.getExpiration();
+        Date todayDate = new Date();
+
+        return tokenExpirationDate.before(todayDate);
+    }
+
+    public static String generateEmailVerificationToken(String userId) {
+
+        String token = Jwts.builder() // building the token
+                .setSubject(userId) // setting subject to it
+                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME)) // setting expiration date 10 days in future from now
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()) // sign token using algorithm and our token secret
+                .compact(); // makes it compact
+
+        return token;
     }
 
 }

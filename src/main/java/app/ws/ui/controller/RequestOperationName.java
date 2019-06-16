@@ -2,6 +2,6 @@ package app.ws.ui.controller;
 
 public enum RequestOperationName {
 
-    DELETE
+    DELETE,VERIFY_EMAIL
 
 }
