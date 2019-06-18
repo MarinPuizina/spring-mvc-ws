@@ -173,8 +173,10 @@ public class UserController {
     }
 
     // http://localhost:8080/spring-mvc-ws/users/email-verification?token=STRING
+    // Added @CrossOrigin and  made sure MediaType JSON is first to remove issues when called through verification service
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(path = "/email-verification",
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token) {
 
         OperationStatusModel returnValue = new OperationStatusModel();
