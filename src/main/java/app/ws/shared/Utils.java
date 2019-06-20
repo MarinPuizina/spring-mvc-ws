@@ -48,7 +48,7 @@ public class Utils {
         return tokenExpirationDate.before(todayDate);
     }
 
-    public static String generateEmailVerificationToken(String userId) {
+    public String generateEmailVerificationToken(String userId) {
 
         String token = Jwts.builder() // building the token
                 .setSubject(userId) // setting subject to it

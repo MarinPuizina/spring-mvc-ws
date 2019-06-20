@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userEntity.setEmailVerificationToken(Utils.generateEmailVerificationToken(publicUserId));
+        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
         userEntity.setEmailVerificationStatus(false); // this is set to false to prevent user from login in before he has verified the acc
 
         UserEntity storedUserDetails = userRepository.save(userEntity); // Storing data in database
