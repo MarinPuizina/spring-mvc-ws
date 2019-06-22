@@ -27,6 +27,9 @@ import static org.mockito.Mockito.*;
 
 class UserServiceImplTest {
 
+    // Instantiates userService and injects mocks into it
+    // When our unit test is run and we call a method on userService like getUser()
+    // Other mocks will be injected into userService
     @InjectMocks
     UserServiceImpl userService;
 
@@ -46,6 +49,7 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
 
+        // Initializing mocks so we can use mocks and inject them
         MockitoAnnotations.initMocks(this);
 
         userEntity = new UserEntity();
