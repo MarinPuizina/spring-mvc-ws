@@ -1,5 +1,6 @@
 package app.ws.service.impl;
 
+import app.ws.exceptions.UserServiceException;
 import app.ws.io.entity.AddressEntity;
 import app.ws.io.entity.UserEntity;
 import app.ws.io.repository.UserRepository;
@@ -81,6 +82,26 @@ class UserServiceImplTest {
                 () -> userService.getUser("test@test.com")
 
                 );
+
+    }
+
+    @Test
+    void createUser_UserServiceException() {
+
+        when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
+
+        UserDto userDto = new UserDto();
+        userDto.setAddresses(getAddressesDto());
+        userDto.setFirstName("Marin");
+        userDto.setLastName("Puizina");
+        userDto.setPassword("123");
+        userDto.setEmail("test@test.com");
+
+        assertThrows(UserServiceException.class,
+
+                () -> userService.createUser(userDto)
+
+        );
 
     }
 
