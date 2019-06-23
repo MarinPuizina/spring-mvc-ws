@@ -28,10 +28,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
                 .permitAll()
+                .antMatchers(SecurityConstants.H2_CONSOLE)
+                .permitAll()
                 .anyRequest().authenticated()
                 .and().addFilter(authenticationFilter())
                 .addFilter(new AuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // Disabling the frame options http header which prevents browser to load page in html tags
+        // Adding it only for H2 purposes, however since this project isn't web site it's fine if we leave this
+        http.headers().frameOptions().disable();
 
     }
 
