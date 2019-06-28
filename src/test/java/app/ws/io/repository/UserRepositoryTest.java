@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 //Needed to make it an integration test
@@ -33,6 +35,9 @@ class UserRepositoryTest {
         Page<UserEntity> pages = userRepository.findAllUsersWithConfirmedEmailAddress(pageableRequest);
 
         assertNotNull(pages);
+
+        List<UserEntity> userEntities = pages.getContent();
+        assertNotNull(userEntities);
 
     }
 
