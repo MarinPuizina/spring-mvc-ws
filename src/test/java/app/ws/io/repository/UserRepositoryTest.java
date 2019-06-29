@@ -26,10 +26,18 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    // Set this to false if working with H2 test database so we can create some data
+    static boolean recordsCreated = true;
+
     @BeforeEach
     void setUp() {
 
-        /*
+        if(!recordsCreated)
+            createRecords();
+
+    }
+
+    private void createRecords() {
         // Prepare User Entity
         UserEntity userEntity = new UserEntity();
         userEntity.setFirstName("Marin");
@@ -56,8 +64,6 @@ class UserRepositoryTest {
         userRepository.save(userEntity);
 
 
-
-
         // Prepare User Entity
         UserEntity userEntity2 = new UserEntity();
         userEntity2.setFirstName("Marin");
@@ -82,8 +88,6 @@ class UserRepositoryTest {
         userEntity2.setAddresses(addresses2);
 
         userRepository.save(userEntity2);
-        */
-
     }
 
     @Test
@@ -96,6 +100,88 @@ class UserRepositoryTest {
 
         List<UserEntity> userEntities = pages.getContent();
         assertNotNull(userEntities);
+
+    }
+
+    @Test
+    void findUserByFirstName() {
+
+        String firstName = "Marin";
+        List<UserEntity> users = userRepository.findUserByFirstName(firstName);
+
+        assertNotNull(users);
+        assertTrue(users.size() > 1);
+
+        UserEntity user = users.get(0);
+        assertTrue(user.getFirstName().equals(firstName));
+
+    }
+
+    @Test
+    void findUserByLastName() {
+
+        String lastName = "Puizina";
+        List<UserEntity> users = userRepository.findUserByLastName(lastName);
+
+        assertNotNull(users);
+        assertTrue(users.size() > 1);
+
+        UserEntity user = users.get(0);
+        assertTrue(user.getLastName().equals(lastName));
+
+    }
+
+    @Test
+    void findUserByKeyword() {
+
+        String keyword = "Marin";
+        List<UserEntity> users = userRepository.findUsersByKeyword(keyword);
+
+        assertNotNull(users);
+        assertTrue(users.size() > 1);
+
+        UserEntity user = users.get(0);
+        assertTrue(
+                user.getLastName().contains(keyword) ||
+                        user.getFirstName().contains(keyword)
+                  );
+
+    }
+
+    @Test
+    void findUserFirstNameAndLastNameByKeyword() {
+
+        String keyword = "Marin";
+        List<Object[]> users = userRepository.findUserFirstNameAndLastNameByKeyword(keyword);
+
+        assertNotNull(users);
+        assertTrue(users.size() > 1);
+
+        Object[] user = users.get(0);
+        assertTrue(user.length == 2);
+        // We know that first name is at index 0 and last name at index 1 because of our query
+        String userFirstName = String.valueOf(user[0]);
+        String userLastName = String.valueOf(user[1]);
+
+        assertNotNull(userFirstName);
+        assertNotNull(userLastName);
+
+        System.out.println("First name = " + userFirstName);
+        System.out.println("Last name = " + userLastName);
+
+    }
+
+    @Test
+    void updateUserEmailVerificationStatus() {
+
+        boolean emailVerificationStatus = true;
+        String userId = "VbyaK1PELFQIQz3ZVDKSI1XF5SCcoe";
+
+        userRepository.updateUserEmailVerificationStatus(emailVerificationStatus, userId);
+
+        UserEntity storedDetails = userRepository.findByUserId(userId);
+
+        assertTrue(storedDetails.getEmailVerificationStatus() == emailVerificationStatus);
 
     }
 
