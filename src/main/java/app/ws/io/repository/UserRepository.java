@@ -59,4 +59,20 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, L
     @Query(value = "update users u set u.EMAIL_VERIFICATION_STATUS = :emailVerificationStatus where u.user_id = :userId", nativeQuery = true)
     void updateUserEmailVerificationStatus(@Param("emailVerificationStatus") boolean emailVerificationStatus, @Param("userId") String userId);
 
+    // JPQL query -> we don't use database names, we use names from our code, like UserEntity class name and field names
+    // JPQL is independent on database, therefore same query should work with any database
+    @Query("select user from UserEntity user where user.userId = :userId")
+    UserEntity findUserEntityByUserId(@Param("userId") String userId);
+
+    @Query("select user.firstName, user.lastName from UserEntity user where user.userId = :userId")
+    List<Object[]> getUserEntityFullNameById(@Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserEntity u set u.emailVerificationStatus = :emailVerificationStatus where u.userId = :userId")
+    void updateUserEntityEmailVerificationStatus(
+            @Param("emailVerificationStatus") boolean emailVerificationStatus,
+            @Param("userId") String userId);
+
+
 }
