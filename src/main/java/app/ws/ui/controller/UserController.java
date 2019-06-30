@@ -24,6 +24,9 @@ import java.util.List;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+// @CrossOrigin(origins= {"http://localhost:8083", "http://localhost:8084"})
+// To allow specific cross origin requests CORS, we can also use this for specific request
+// We also can do this globally in config class
 @RestController
 @RequestMapping("/users") //http://localhost:8080/spring-mvc-ws/users
 public class UserController {
