@@ -7,6 +7,9 @@ import app.ws.shared.dto.AddressDto;
 import app.ws.shared.dto.UserDto;
 import app.ws.ui.model.request.UserDetailsRequestModel;
 import app.ws.ui.model.response.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +40,11 @@ public class UserController {
     @Autowired
     AddressService addressService;
 
+    @ApiOperation(value="The Get User Details Web Service Endpoint",
+            notes="${userController.GetUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path = "/{id}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest getUser(@PathVariable String id) {
@@ -50,6 +58,11 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value="The Create User Web Service Endpoint",
+            notes="${userController.CreateUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
                  produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws UserServiceException {
@@ -71,6 +84,11 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value = "The Update User Web Service Endpoint",
+            notes = "${userController.UpdateUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @PutMapping(path = "/{id}",
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -89,6 +107,11 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value = "The Delete User Web Service Endpoint",
+            notes = "${userController.DeleteUser.ApiOperation.Notes}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @DeleteMapping(path = "/{id}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public OperationStatusModel deleteUser(@PathVariable String id) {
@@ -104,6 +127,12 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value = "The Get Users Web Service Endpoint",
+            notes = "${userController.GetUsers.ApiOperation.Notes}")
+    // Adding Swagger implicit params to make authorization header available
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
@@ -123,7 +152,12 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value = "The Get User Addresses Web Service Endpoint",
+            notes = "${userController.GetUserAddresses.ApiOperation.Notes}")
     // http://localhost:8080/spring-mvc-ws/users/{id}/addresses
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path = "/{id}/addresses",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
     public Resources<AddressesRest> getUserAddresses(@PathVariable String id) {
@@ -152,7 +186,12 @@ public class UserController {
         return new Resources<>(addressesRestsModel);
     }
 
+    @ApiOperation(value = "The Get User Address Web Service Endpoint",
+            notes = "${userController.GetUserAddress.ApiOperation.Notes}")
     // http://localhost:8080/spring-mvc-ws/users/{userId}/addresses/{addressId}
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+    })
     @GetMapping(path = "/{userId}/addresses/{addressId}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
     public Resource<AddressesRest> getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
